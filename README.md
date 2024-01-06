@@ -61,8 +61,4 @@ visualizer.apply_theme('light')
 ## Contributing
 Contributions to `TS_visual` are welcome. Please ensure to follow the project's code style and add unit tests for any new or changed functionality. Fork the repository and submit pull requests for review.
 
-## License
-This project is licensed under [License Name].
 
-## Acknowledgements
-Special thanks to [Contributors' Names] for their contributions and support in developing this project.
