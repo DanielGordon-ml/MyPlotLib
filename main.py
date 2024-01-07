@@ -8,7 +8,6 @@ from sklearn.linear_model import LinearRegression
 
 import matplotlib.pyplot as plt
 
-
 class TS_visual():
     '''
     The following class use matplotlib to plot the data from pandas dataframe. 
@@ -262,7 +261,7 @@ class TS_visual():
         else:
             plt.close()
         
-
+    # Plot Full statistics including ACF, PACF, Trend, Seasonality, Residuals
     def full_statistics_plot(self, ts_column: str, display=True, save:bool=False, save_path:str=None):
         '''
         Comprehensive plot showing various statistical aspects of a time series.
@@ -348,6 +347,69 @@ class TS_visual():
             plt.show()
         else:
             plt.close()
+
+    
+    # Calculate the correlation between two time series
+    def correlation(self, ts_column1: str, ts_column2: str, display=True, save: bool = False, save_path: str = None):
+        '''
+        Calculate the correlation between two time series.
+        The correlation is calculated using the Pearson correlation coefficient.
+
+        Input:
+            ts_column1: str
+                The column name of the first time series data.
+            ts_column2: str
+                The column name of the second time series data.
+            display: bool (optional, default=True)
+                If True, the plot will be displayed.
+            save: bool (optional, default=False)
+                If True, the plot will be saved.
+            save_path: str (optional, default=None)
+                The path to save the plot.
+        Output:
+            correlation: float
+                The Pearson correlation coefficient.
+        '''
+        if ts_column1 not in self.df.columns:
+            raise ValueError(f"{ts_column1} not found in DataFrame columns")
+        if ts_column2 not in self.df.columns:
+            raise ValueError(f"{ts_column2} not found in DataFrame columns")
+
+        correlation = self.df[ts_column1].corr(self.df[ts_column2])
+        # use line color from theme
+        color = self.line_colors[0] if self.line_colors else 'black'
+        
+        
+        # plot as scatter
+        plt.scatter(self.df[ts_column1],self.df[ts_column2])
+        # add regression line
+        x = np.array(self.df[ts_column1]).reshape(-1,1)
+        y = np.array(self.df[ts_column2]).reshape(-1,1)
+        model = LinearRegression().fit(x,y)
+        y_pred = model.predict(x)
+        plt.plot(x,y_pred,color=color,linestyle='-')
+        plt.xlabel(ts_column1)
+        plt.ylabel(ts_column2)
+        plt.title(f'{ts_column1} vs {ts_column2}: Correlation {correlation:.2f}')
+        
+        if save:
+            self.save_plot(file_name= f'{ts_column1} vs {ts_column2}',save_path=save_path)
+
+        if display:
+            print(f'Correlation between {ts_column1} and {ts_column2}: {correlation:.2f}')
+            plt.show()
+        else:
+            plt.close()
+
+        return correlation
+    
+    
+    # TODO: fit underling distribution and plot in one plot both the distribution and the histogram of the data
+    
+    # TODO: Find the best p,d,q for ARIMA model and plot the k next steps with the AIC and BIC 
+    
+    # TODO : Find the best (p,d,q), (P,D,[s],Q) for SARIMA model and plot the k next steps with the AIC and BIC
+    
 
     # Utility Functions
     # Apply theme 
